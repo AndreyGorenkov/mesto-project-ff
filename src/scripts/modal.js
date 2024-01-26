@@ -1,69 +1,43 @@
-import { profileName, profileJob } from './index.js';
-
-const imagePopup = document.querySelector('.popup_type_image');
-
 export const openImage = function (event) {
 
+  const imagePopup = document.querySelector('.popup_type_image');
   const url = event.target.src;
+  const alt = event.target.alt;
   imagePopup.querySelector(".popup__image").src = url;
-  open(imagePopup);
+  imagePopup.querySelector(".popup__image").alt = alt;
+  imagePopup.querySelector(".popup__caption").textContent = alt;
+  openModal(imagePopup);
 
 }
 
-export function open(element) {
-
-  const closeButton = element.querySelector('.popup__close');
+export function openModal(element) {
 
   element.classList.add('popup_is-opened');
-  closeButton.addEventListener('click', close);
   document.addEventListener('keydown', escapeClose);
   element.addEventListener('click', overlayClose);
 
 }
-  
-export function close() {
-  
-  const popupOpen = document.querySelector('.popup_is-opened');
-  const closeButton = popupOpen.querySelector('.popup__close');
 
-  popupOpen.classList.remove('popup_is-opened');
-  popupOpen.classList.add('popup_is-animated');
-  closeButton.removeEventListener('click', close);
+export function closeModal(element) {
+
+  element.classList.remove('popup_is-opened');
+  element.classList.add('popup_is-animated');
   document.removeEventListener('keydown', escapeClose);
-  popupOpen.removeEventListener('click', overlayClose);
 
 }
-  
+
 function escapeClose(event) {
 
   if (event.key === "Escape") {
-    close();
+    closeModal(document.querySelector('.popup_is-opened'));
   }
 
 }
-  
+
 function overlayClose(event) {
 
   if (event.target.classList.contains('popup')) {
-    close();
+    closeModal(event.currentTarget);
   }
-
-}
-
-const formElement = document.querySelector('.popup__form');
-export const nameInput = formElement.querySelector('.popup__input_type_name');
-export const jobInput = formElement.querySelector('.popup__input_type_description');
-
-export function handleFormSubmit(event) {
-
-    event.preventDefault();
-
-    const name = nameInput.value;
-    const job = jobInput.value;
-
-    profileName.textContent = name;
-    profileJob.textContent = job;
-
-    close()
 
 }
