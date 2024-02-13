@@ -1,15 +1,3 @@
-export const openImage = function (event) {
-
-  const imagePopup = document.querySelector('.popup_type_image');
-  const url = event.target.src;
-  const alt = event.target.alt;
-  imagePopup.querySelector(".popup__image").src = url;
-  imagePopup.querySelector(".popup__image").alt = alt;
-  imagePopup.querySelector(".popup__caption").textContent = alt;
-  openModal(imagePopup);
-
-}
-
 export function openModal(element) {
 
   element.classList.add('popup_is-opened');
@@ -23,6 +11,7 @@ export function closeModal(element) {
   element.classList.remove('popup_is-opened');
   element.classList.add('popup_is-animated');
   document.removeEventListener('keydown', escapeClose);
+  element.removeEventListener('click', overlayClose);
 
 }
 

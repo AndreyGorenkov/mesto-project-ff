@@ -1,0 +1,11 @@
+.profile__edit-icon {
+  pointer-events: none;
+  display: none;
+  left: 5.5%;
+  position: absolute;
+  top: 44%;
+}
+
+.profile__image:hover + .profile__edit-icon {
+  display: block;
+}
