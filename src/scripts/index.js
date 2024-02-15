@@ -23,30 +23,35 @@ const jobInput = profilePopup.querySelector('.popup__input_type_description');
 const newCardUrlInput = newCardPopup.querySelector('.popup__input_type_url');
 const newCardNameInput = newCardPopup.querySelector('.popup__input_type_card-name');
 const photoInput = profilePhotoPopup.querySelector('.popup__input_photo_url');
-const submitButtons = document.querySelectorAll('.popup__button');
-const loadingButtons = document.querySelectorAll('.popup__loading-button');
+const imagePopup = document.querySelector('.popup_type_image');
+const imagePopupElement = imagePopup.querySelector('.popup__image');
+const imagePopupCaption = imagePopup.querySelector('.popup__caption');
+
+
+
+
+// Крутое ревью. После сдачи практической обязательно перечитаю ещё раз все замечания и исправлю все "Можно лучше".
+
+
+
 
 export const openImage = function (event) {
 
-  const imagePopup = document.querySelector('.popup_type_image');
-  const url = event.target.src;
-  const alt = event.target.alt;
-  imagePopup.querySelector(".popup__image").src = url;
-  imagePopup.querySelector(".popup__image").alt = alt;
-  imagePopup.querySelector(".popup__caption").textContent = alt;
+  imagePopupElement.src = event.target.src;
+  imagePopupElement.alt = event.target.alt;
+  imagePopupCaption.textContent = event.target.alt;
   openModal(imagePopup);
 
 }
 
-function renderLoading(isLoading) {
+function renderLoading(isLoading, button, buttonText='Сохранить', loadingText='Сохранение...') {
 
   if (isLoading) {
-    loadingButtons.forEach(item => item.classList.add('loading-text_visible'))
-    submitButtons.forEach(item => item.classList.add('button-text_hidden'))
+    button.textContent = loadingText
   } else {
-    loadingButtons.forEach(item => item.classList.remove('loading-text_visible'))
-    submitButtons.forEach(item => item.classList.remove('button-text_hidden'))
+    button.textContent = buttonText
   }
+
 }
 
 closeButtons.forEach(item => {
@@ -61,58 +66,60 @@ function setUser({ name, avatar, about }) {
   profileAvatar.src = avatar;
 }
 
-function profileFormSubmit(event) {
+function handleProfileFormSubmit(event) {
 
+  const button = event.submitter;
   event.preventDefault();
-  renderLoading(true);
+  renderLoading(true, button);
   const data = { name: nameInput.value, about: jobInput.value };
   updateUserInfoApi(data).then(result => {
     setUser(result);
-    closeModal(document.querySelector('.popup_is-opened'));
+    closeModal(profilePopup);
   })
   .catch((err) => {
     console.log(err);
   })
   .finally(() => {
-    renderLoading(false);
+    renderLoading(false, button);
   });
 }
 
-function newCardSubmit(event) {
+function handleNewCardSubmit(event) {
 
-
+  const button = event.submitter;
   event.preventDefault();
-  renderLoading(true);
+  renderLoading(true, button);
   const data = { link: newCardUrlInput.value, name: newCardNameInput.value }
   createCardApi(data)
     .then(card => {
       createCard(card, card.owner._id);
-      closeModal(document.querySelector('.popup_is-opened'))
+      closeModal(cardPopup)
       formElementNew.reset();
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      renderLoading(false);
+      renderLoading(false, button);
     });
 }
 
-function profilePhotoSubmit(event) {
+function handleProfilePhotoSubmit(event) {
 
+  const button = event.submitter;
   event.preventDefault();
-  renderLoading(true);
+  renderLoading(true, button);
   const data = photoInput.value;
   updateUserPhotoApi(data)
   .then(result => {
     setUser(result);
-    closeModal(document.querySelector('.popup_is-opened'));
+    closeModal(photoPopup);
   })
   .catch((err) => {
     console.log(err);
   })
   .finally(() => {
-    renderLoading(false);
+    renderLoading(false, button);
   });
 }
 
@@ -126,6 +133,7 @@ profileButton.addEventListener('click', function() {
 addCardButton.addEventListener('click', function() {
   clearValidation(cardPopup, validationConfig);
   openModal(cardPopup);
+  enableValidation(validationConfig);
 });
 
 profileAvatar.addEventListener('click', function() {
@@ -133,9 +141,9 @@ profileAvatar.addEventListener('click', function() {
   openModal(photoPopup);
 });
 
-formElementEdit.addEventListener('submit', profileFormSubmit);
-formElementNew.addEventListener('submit', newCardSubmit);
-formElementPhoto.addEventListener('submit', profilePhotoSubmit);
+formElementEdit.addEventListener('submit', handleProfileFormSubmit);
+formElementNew.addEventListener('submit', handleNewCardSubmit);
+formElementPhoto.addEventListener('submit', handleProfilePhotoSubmit);
 
 enableValidation(validationConfig);
 

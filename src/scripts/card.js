@@ -38,7 +38,7 @@ function likeCard(event, cardId, countElement) {
   }
 }
 
-export function createCardElement(card, userId) {
+export function createCardElement(card, userId, { deleteCard, likeCard, openImage }) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteCardButton = cardElement.querySelector('.card__delete-button');
@@ -46,8 +46,8 @@ export function createCardElement(card, userId) {
   const likeCardCount = cardElement.querySelector('.card__like-count');
   const cardImage = cardElement.querySelector('.card__image');
 
-  cardElement.querySelector('.card__image').src = card.link;
-  cardElement.querySelector('.card__image').alt = card.name;
+  cardImage.src = card.link;
+  cardImage.alt = card.name;
   cardElement.querySelector('.card__title').textContent = card.name;
   likeCardCount.textContent = card.likes.length;
   likeCardButton.addEventListener('click', (event) => likeCard(event, card._id, likeCardCount));
@@ -67,13 +67,13 @@ export function createCardElement(card, userId) {
 }
 
 export function createCard(card, userId) {
-  const cardElement = createCardElement(card, userId);
+  const cardElement = createCardElement(card, userId, { deleteCard, likeCard, openImage });
   cardsContainer.prepend(cardElement);
 }
 
 export function createCards(cards, userId) {
   cards.forEach(card => {
-    const cardElement = createCardElement(card, userId);
+    const cardElement = createCardElement(card, userId, { deleteCard, likeCard, openImage });
     cardsContainer.append(cardElement);
   });
 }
